@@ -14,7 +14,7 @@ public class UserEntity {
     private Long id;
 
     @Column(name = "nick_name", unique = true)
-    private String nickName;
+    private String nickname;
 
     @Column(name = "email", unique = true)
     private String email;
@@ -51,9 +51,17 @@ public class UserEntity {
     public UserEntity() {
     }
 
-    public UserEntity(Long id, String nickName, String email, String password, Set<RoleEntity> roles, boolean isEnabled, boolean accountNoExpired, boolean accountNoLocked, boolean credentialNoExpired) {
+    public UserEntity(Long id,
+                      String nickname,
+                      String email,
+                      String password,
+                      Set<RoleEntity> roles,
+                      boolean isEnabled,
+                      boolean accountNoExpired,
+                      boolean accountNoLocked,
+                      boolean credentialNoExpired) {
         this.id = id;
-        this.nickName = nickName;
+        this.nickname = nickname;
         this.email = email;
         this.password = password;
         this.roles = roles;
@@ -63,9 +71,19 @@ public class UserEntity {
         this.credentialNoExpired = credentialNoExpired;
     }
 
-    public UserEntity(Long id, String nickName, String email, String password, Set<RoleEntity> roles, boolean isEnabled, boolean accountNoExpired, boolean accountNoLocked, boolean credentialNoExpired, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public UserEntity(Long id,
+                      String nickname,
+                      String email,
+                      String password,
+                      Set<RoleEntity> roles,
+                      boolean isEnabled,
+                      boolean accountNoExpired,
+                      boolean accountNoLocked,
+                      boolean credentialNoExpired,
+                      LocalDateTime createdAt,
+                      LocalDateTime updatedAt) {
         this.id = id;
-        this.nickName = nickName;
+        this.nickname = nickname;
         this.email = email;
         this.password = password;
         this.roles = roles;
@@ -85,12 +103,12 @@ public class UserEntity {
         this.id = id;
     }
 
-    public String getNickName() {
-        return nickName;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getEmail() {
@@ -169,7 +187,7 @@ public class UserEntity {
     public String toString() {
         return "UserEntity[" +
                 "id=" + id +
-                ", nickName='" + nickName + '\'' +
+                ", nickName='" + nickname + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", roles=" + roles +
