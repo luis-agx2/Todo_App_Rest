@@ -2,6 +2,8 @@ package com.lag.todoapp.todoapp.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "user_details")
 public class UserDetailEntity {
@@ -23,6 +25,12 @@ public class UserDetailEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     public UserDetailEntity() {
     }
 
@@ -30,12 +38,16 @@ public class UserDetailEntity {
                             String firstName,
                             String lastName,
                             Integer age,
-                            UserEntity user) {
+                            UserEntity user,
+                            LocalDateTime createdAt,
+                            LocalDateTime updatedAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
         this.user = user;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public Long getId() {
@@ -78,6 +90,22 @@ public class UserDetailEntity {
         this.user = user;
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     @Override
     public String toString() {
         return "UserDetailEntity[" +
@@ -86,6 +114,8 @@ public class UserDetailEntity {
                 ", lastName='" + lastName + '\'' +
                 ", age=" + age +
                 ", user=" + user +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
                 ']';
     }
 }
