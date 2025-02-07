@@ -1,6 +1,7 @@
 package com.lag.todoapp.todoapp.advice;
 
 import com.lag.todoapp.todoapp.exception.NotFoundException;
+import com.lag.todoapp.todoapp.exception.ValidationErrorException;
 import com.lag.todoapp.todoapp.model.ErrorResponseDto;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,16 @@ public class GlobalxceptionHandler extends ResponseEntityExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponseDto);
+    }
+
+    @ExceptionHandler({ValidationErrorException.class})
+    public ResponseEntity<ErrorResponseDto> handleBadCredentialsException(ValidationErrorException ex) {
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage()
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponseDto);
     }
 
     @Override
