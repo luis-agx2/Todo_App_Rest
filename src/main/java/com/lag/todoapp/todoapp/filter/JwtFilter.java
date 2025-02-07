@@ -76,7 +76,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         Set<SimpleGrantedAuthority> roles = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
-                .collect(Collectors.toSet());
+                . collect(Collectors.toSet());
 
         return new CustomUserDetails(
                 user.getId(),
