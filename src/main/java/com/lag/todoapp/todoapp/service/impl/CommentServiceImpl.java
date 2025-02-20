@@ -42,7 +42,7 @@ public class CommentServiceImpl implements CommentService {
         Page<CommentEntity> result = commentRepository.findAllFilteredAndPaginated(filters.getTitle(), filters.getUserId(), filters.getCreatedAt(), pageable);
 
         return new PageImpl<>(
-                commentMapper.toCommentDtoListAdmin(result.getContent()),
+                commentMapper.toCommentDtoList(result.getContent()),
                 pageable,
                 result.getTotalElements()
         );
@@ -52,16 +52,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentDto findByIdAdmin(Long commentId) throws NotFoundException {
         CommentEntity entity = commentRepository.findById(commentId).orElseThrow(() -> new NotFoundException("Comment not found"));
 
-        return commentMapper.toDtoAdmin(entity);
-    }
-
-    @Transactional
-    @Override
-    public CommentDto create(CommentRequest request) throws NotFoundException {
-        CommentEntity commentToCreate = mapToEntity(request);
-        commentToCreate.setCreatedAt(LocalDateTime.now());
-
-        return commentMapper.toDto(commentRepository.save(commentToCreate));
+        return commentMapper.toDto(entity);
     }
 
     @Transactional
@@ -76,22 +67,11 @@ public class CommentServiceImpl implements CommentService {
         return commentMapper.toDto(commentRepository.save(commentToCreate));
     }
 
-    @Transactional
-    @Override
-    public CommentDto deleteById(Long commentId) throws NotFoundException {
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        CommentEntity entity = commentRepository.findByIdAndUserId(commentId, userDetails.getId()).orElseThrow(() -> new NotFoundException("Comment not found"));
-        commentRepository.delete(entity);
-
-        return commentMapper.toDto(entity);
-    }
-
     @Override
     public List<CommentDto> findAllMe() {
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return commentMapper.toCommentDtoList(commentRepository.findAllByUserId(userDetails.getId()));
+        return commentMapper.toCommentDtoListMe(commentRepository.findAllByUserId(userDetails.getId()));
     }
 
     @Override
@@ -100,7 +80,7 @@ public class CommentServiceImpl implements CommentService {
 
         CommentEntity entity = commentRepository.findByIdAndUserId(commentId, userDetails.getId()).orElseThrow(() -> new NotFoundException("Comment not found"));
 
-        return commentMapper.toDto(entity);
+        return commentMapper.toDtoMe(entity);
     }
 
     // TODO: Cuando este listo las task relacionar la task con el comment

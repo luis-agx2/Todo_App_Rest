@@ -53,20 +53,8 @@ public class CommentController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping
-    public ResponseEntity<Object> create(@Valid @RequestBody CommentRequest request) throws NotFoundException {
-        return ResponseEntity.ok(commentService.create(request));
-    }
-
-    @PreAuthorize("isAuthenticated()")
     @PutMapping("/{commentId}")
     public ResponseEntity<Object> updateById(@RequestBody CommentRequest request, @PathVariable Long commentId) throws NotFoundException {
         return ResponseEntity.ok(commentService.updateById(commentId, request));
-    }
-
-    @PreAuthorize("isAuthenticated()")
-    @DeleteMapping("/{commentId}")
-    public ResponseEntity<Object> deleteById(@PathVariable Long commentId) throws NotFoundException {
-        return ResponseEntity.ok(commentService.deleteById(commentId));
     }
 }

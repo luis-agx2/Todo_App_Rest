@@ -1,5 +1,7 @@
 package com.lag.todoapp.todoapp.model.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 public class CommentDto {
     private Long id;
 
@@ -7,6 +9,7 @@ public class CommentDto {
 
     private String message;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private UserDto user;
 
     public CommentDto() {
@@ -46,11 +49,11 @@ public class CommentDto {
         this.message = message;
     }
 
-    public UserDto getUserDto() {
+    public UserDto getUser() {
         return user;
     }
 
-    public void setUserDto(UserDto user) {
+    public void setUser(UserDto user) {
         this.user = user;
     }
 

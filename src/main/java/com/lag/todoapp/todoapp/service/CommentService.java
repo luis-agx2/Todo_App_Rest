@@ -14,11 +14,7 @@ public interface CommentService {
 
     CommentDto findByIdAdmin(Long commentId) throws NotFoundException;
 
-    CommentDto create(CommentRequest request) throws NotFoundException;
-
     CommentDto updateById(Long commentId, CommentRequest request) throws NotFoundException;
-
-    CommentDto deleteById(Long commentId) throws NotFoundException;
 
     List<CommentDto> findAllMe();
 

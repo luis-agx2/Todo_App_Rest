@@ -28,27 +28,27 @@ public class CommentMapper {
         dto.setId(entity.getId());
         dto.setTitle(entity.getTitle());
         dto.setMessage(entity.getMessage());
-        dto.setUserDto(null);
+
+        if (entity.getUser() != null) {
+            dto.setUser(userMapper.toDtoWitOutRoles(entity.getUser()));
+        }
 
         return dto;
     }
 
-    public List<CommentDto> toCommentDtoListAdmin(List<CommentEntity> entities) {
+    public List<CommentDto> toCommentDtoListMe(List<CommentEntity> entities) {
         return entities.stream()
-                .map(this::toDtoAdmin)
+                .map(this::toDtoMe)
                 .toList();
     }
 
-    public CommentDto toDtoAdmin(CommentEntity entity) {
+    public CommentDto toDtoMe(CommentEntity entity) {
         CommentDto dto = new CommentDto();
 
         dto.setId(entity.getId());
         dto.setTitle(entity.getTitle());
         dto.setMessage(entity.getMessage());
-
-        if (entity.getUser() != null) {
-            dto.setUserDto(userMapper.toDto(entity.getUser()));
-        }
+        dto.setUser(null);
 
         return dto;
     }
