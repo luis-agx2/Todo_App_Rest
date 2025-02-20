@@ -32,7 +32,7 @@ public class LabelMapper {
         dto.setColor(entity.getColor());
 
         if (entity.getUser() != null) {
-            dto.setUser(userMapper.toDto(entity.getUser()));
+            dto.setUser(userMapper.toDtoWitOutRoles(entity.getUser()));
         }
 
         return dto;

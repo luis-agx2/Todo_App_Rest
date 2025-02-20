@@ -24,4 +24,15 @@ public class UserMapper {
 
         return dto;
     }
+
+    UserDto toDtoWitOutRoles(UserEntity entity) {
+        UserDto dto = new UserDto();
+
+        dto.setId(entity.getId());
+        dto.setNickname(entity.getNickname());
+        dto.setEmail(entity.getEmail());
+        dto.setRoles(null);
+
+        return dto;
+    }
 }

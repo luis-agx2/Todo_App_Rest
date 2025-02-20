@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface LabelRepository extends JpaRepository<LabelEntity, Long> {
@@ -36,4 +37,6 @@ public interface LabelRepository extends JpaRepository<LabelEntity, Long> {
     boolean existsByNameAndUserId(String name, Long userId);
 
     Optional<LabelEntity> findByNameAndUserIdAndIdIsNot(String name, Long userId, Long labelId);
+
+    List<LabelEntity> findAllByIdInAndUserId(List<Long> ids, Long userId);
 }

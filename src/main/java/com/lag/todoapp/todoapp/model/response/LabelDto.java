@@ -1,5 +1,7 @@
 package com.lag.todoapp.todoapp.model.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 public class LabelDto {
     private Long id;
 
@@ -7,6 +9,7 @@ public class LabelDto {
 
     private String color;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private UserDto user;
 
     public LabelDto() {

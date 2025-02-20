@@ -1,9 +1,9 @@
 package com.lag.todoapp.todoapp.model.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class UserDto {
     private Long id;
@@ -12,6 +12,7 @@ public class UserDto {
 
     private String email;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<RoleDto> roles = new ArrayList<>();
 
     public UserDto() {
