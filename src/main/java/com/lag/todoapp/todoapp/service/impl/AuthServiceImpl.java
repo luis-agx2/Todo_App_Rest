@@ -1,5 +1,7 @@
 package com.lag.todoapp.todoapp.service.impl;
 
+import com.lag.todoapp.todoapp.client.QuoteClient;
+import com.lag.todoapp.todoapp.client.dto.QuoteDto;
 import com.lag.todoapp.todoapp.entity.RoleEntity;
 import com.lag.todoapp.todoapp.entity.UserDetailEntity;
 import com.lag.todoapp.todoapp.entity.UserEntity;
@@ -42,19 +44,23 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserDetailRepository userDetailRepository;
 
+    private final QuoteClient quoteClient;
+
     @Autowired
     public AuthServiceImpl(AuthenticationManager authenticationManager,
                            PasswordEncoder passwordEncoder,
                            JwtService jwtService,
                            UserRepository userRepository,
                            RoleRepository roleRepository,
-                           UserDetailRepository userDetailRepository) {
+                           UserDetailRepository userDetailRepository,
+                           QuoteClient quoteClient) {
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userDetailRepository = userDetailRepository;
+        this.quoteClient = quoteClient;
     }
 
     @Override
@@ -70,7 +76,11 @@ public class AuthServiceImpl implements AuthService {
         UserDetails userDetails = buildUserDetails(user);
         String jwt = jwtService.generateToken(userDetails);
 
-        return new LoginDto(jwt);
+        QuoteDto quote = quoteClient.get("https://dummyjson.com/quotes/random", QuoteDto.class);
+
+
+
+        return new LoginDto(jwt, quote);
     }
 
     @Transactional
