@@ -3,6 +3,7 @@ package com.lag.todoapp.todoapp.advice;
 import com.lag.todoapp.todoapp.exception.NotFoundException;
 import com.lag.todoapp.todoapp.exception.ValidationErrorException;
 import com.lag.todoapp.todoapp.model.ErrorResponseDto;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -56,6 +57,16 @@ public class GlobalxceptionHandler extends ResponseEntityExceptionHandler {
         ErrorResponseDto errorResponseDto = new ErrorResponseDto(
                 HttpStatus.FORBIDDEN.value(),
                 "Access denied"
+        );
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponseDto);
+    }
+
+    @ExceptionHandler({ExpiredJwtException.class})
+    public ResponseEntity<ErrorResponseDto> handleExpiredJwtException(ExpiredJwtException ex) {
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(
+          HttpStatus.FORBIDDEN.value(),
+          ex.getMessage()
         );
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponseDto);
