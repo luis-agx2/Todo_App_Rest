@@ -14,7 +14,11 @@ import com.lag.todoapp.todoapp.model.response.LabelDto;
 import com.lag.todoapp.todoapp.model.response.TaskDto;
 import com.lag.todoapp.todoapp.repository.*;
 import com.lag.todoapp.todoapp.service.TaskService;
+import com.lag.todoapp.todoapp.util.DataForExcelUtil;
 import jakarta.transaction.Transactional;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -22,6 +26,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
@@ -44,6 +50,7 @@ public class TaskServiceImpl implements TaskService {
     private final CommentMapper commentMapper;
     private final CommentRepository commentRepository;
 
+    @Autowired
     public TaskServiceImpl(TaskRepository taskRepository,
                            TaskMapper taskMapper,
                            StatusRepository statusRepository,
@@ -196,6 +203,60 @@ public class TaskServiceImpl implements TaskService {
         return commentMapper.toDtoMe(commentToDelete);
     }
 
+    @Override
+    public byte[] generateExcelReport() throws IOException {
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<TaskEntity> tasks = taskRepository.findAllByUserId(userDetails.getId());
+
+        // Creamos el libro
+        ByteArrayOutputStream bos;
+        try (Workbook book = new XSSFWorkbook()) {
+            // Creamos las hojas
+            Sheet sheet = book.createSheet("Tasks");
+
+            // Creamos la fila 1, que es la cabecera
+            Row row = sheet.createRow(0);
+            // Creamos los titulos de la cabecera
+            for (int i = 0; i < DataForExcelUtil.HEADERS.size(); i++) {
+                sheet.setColumnWidth(i, 30 * 256);
+
+                Font font = book.createFont();
+                font.setBold(true);
+
+                CellStyle style = book.createCellStyle();
+                style.setFont(font);
+
+                Cell cell = row.createCell(i);
+                cell.setCellValue(DataForExcelUtil.HEADERS.get(i).toUpperCase());
+                cell.setCellStyle(style);
+            }
+
+            // Insertamos los datos de la db
+            for (int i = 0; i < tasks.size(); i++) {
+                Row dataRow = sheet.createRow(i + 1);
+
+                Cell cellId = dataRow.createCell(0);
+                cellId.setCellValue(tasks.get(i).getId());
+                cellId.setCellStyle(styleContent(book));
+
+                dataRow.createCell(1).setCellValue(tasks.get(i).getTitle());
+                dataRow.createCell(2).setCellValue(tasks.get(i).getDescription());
+                dataRow.createCell(3).setCellValue(tasks.get(i).getStatus().getName());
+                dataRow.createCell(4).setCellValue(tasks.get(i).getPriority().getName());
+
+                Cell createdDateCell = dataRow.createCell(5);
+                createdDateCell.setCellStyle(styleDate(book));
+                createdDateCell.setCellValue(tasks.get(i).getCreatedAt());
+            }
+
+            // Escribimos los datos en el libro y los cerramos
+            bos = new ByteArrayOutputStream();
+            book.write(bos);
+        }
+
+        return bos.toByteArray();
+    }
+
     private TaskEntity toEntityForCreate(TaskRequest request) throws NotFoundException {
         TaskEntity entity = taskMapper.toEntity(request);
 
@@ -271,5 +332,22 @@ public class TaskServiceImpl implements TaskService {
         comment.setUser(getLoggedUser());
 
         return commentRepository.save(comment);
+    }
+
+    private CellStyle styleContent(Workbook workbook) {
+        CellStyle style = workbook.createCellStyle();
+        style.setAlignment(HorizontalAlignment.LEFT);
+
+        return style;
+    }
+
+    private CellStyle styleDate(Workbook workbook) {
+        CreationHelper creationHelper = workbook.getCreationHelper();
+        CellStyle style = workbook.createCellStyle();
+
+        style.setAlignment(HorizontalAlignment.LEFT);
+        style.setDataFormat(creationHelper.createDataFormat().getFormat("dd/mm/yyyy hh:mm:ss"));
+
+        return style;
     }
 }

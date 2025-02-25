@@ -7,11 +7,14 @@ import com.lag.todoapp.todoapp.model.request.TaskRequest;
 import com.lag.todoapp.todoapp.service.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.time.LocalDate;
 
 @RestController
@@ -96,4 +99,19 @@ public class TaskController {
     public ResponseEntity<Object> removeCommentFomTask(@PathVariable Long taskId, @PathVariable Long commentId) throws NotFoundException {
         return ResponseEntity.ok(taskService.removeComment(taskId, commentId));
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/report")
+    public ResponseEntity<byte[]> downloadReport() throws IOException {
+        byte[] excelBytes = taskService.generateExcelReport();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attach; filename=reporte.xlsx");
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(excelBytes);
+    }
+
 }

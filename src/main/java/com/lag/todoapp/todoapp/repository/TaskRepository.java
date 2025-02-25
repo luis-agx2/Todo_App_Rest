@@ -43,6 +43,13 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Long> {
             "WHERE t.id = :taskId")
     Optional<TaskEntity> findByIdAdmin(Long taskId);
 
+    @Query("SELECT t FROM TaskEntity t " +
+            "LEFT JOIN FETCH t.user u " +
+            "LEFT JOIN FETCH t.priority p " +
+            "LEFT JOIN FETCH t.status " +
+            "WHERE u.id = :userId")
+    List<TaskEntity> findAllByUserId(Long userId);
+
     @Query("SELECT t from TaskEntity t " +
             "LEFT JOIN FETCH t.user u " +
             "LEFT JOIN FETCH t.priority p " +
