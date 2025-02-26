@@ -94,9 +94,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Page<TaskDto> findAllPaginated(Pageable pageable) {
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+    public Page<TaskDto> findAllPaginated(Pageable pageable, CustomUserDetails userDetails) {
         Page<TaskEntity> results = taskRepository.findAllPaginatedByUser(userDetails.getId(), pageable);
 
         return new PageImpl<>(
@@ -107,9 +105,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDto findById(Long taskId) throws NotFoundException {
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+    public TaskDto findById(Long taskId, CustomUserDetails userDetails) throws NotFoundException {
         TaskEntity entity = taskRepository.findByIdAndUserId(taskId, userDetails.getId()).orElseThrow(() -> new NotFoundException("Task not found"));
 
         return taskMapper.toDto(entity);
@@ -125,16 +121,15 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional
     @Override
-    public TaskDto updateById(Long taskId, TaskRequest request) throws NotFoundException {
-        TaskEntity entityToUpdate = toEntityForUpdate(taskId, request);
+    public TaskDto updateById(Long taskId, TaskRequest request, CustomUserDetails userDetails) throws NotFoundException {
+        TaskEntity entityToUpdate = toEntityForUpdate(taskId, request, userDetails.getId());
 
         return taskMapper.toDto(taskRepository.save(entityToUpdate));
     }
 
     @Transactional
     @Override
-    public TaskDto deleteById(Long taskId) throws NotFoundException {
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public TaskDto deleteById(Long taskId, CustomUserDetails userDetails) throws NotFoundException {
         TaskEntity entity = taskRepository.findByIdAndUserId(taskId, userDetails.getId()).orElseThrow(() -> new NotFoundException("Task not found"));
 
         taskRepository.delete(entity);
@@ -144,8 +139,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional
     @Override
-    public List<LabelDto> addLabel(Long taskId, Long labelId) throws NotFoundException {
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public List<LabelDto> addLabel(Long taskId, Long labelId, CustomUserDetails userDetails) throws NotFoundException {
         TaskEntity entity = taskRepository.findByIdAndUserId(taskId, userDetails.getId()).orElseThrow(() -> new NotFoundException("Task not found"));
 
         boolean containLabel = entity.getLabels().stream().anyMatch(label -> label.getId().equals(labelId));
@@ -163,8 +157,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional
     @Override
-    public List<LabelDto> removeLabel(Long taskId, Long labelId) throws NotFoundException {
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public List<LabelDto> removeLabel(Long taskId, Long labelId, CustomUserDetails userDetails) throws NotFoundException {
         TaskEntity entity = taskRepository.findByIdAndUserId(taskId, userDetails.getId()).orElseThrow(() -> new NotFoundException("Task not found"));
 
         entity.getLabels().removeIf(label -> label.getId().equals(labelId));
@@ -175,7 +168,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public CommentDto addComment(CommentRequest request) throws NotFoundException {
+    public CommentDto addComment(CommentRequest request, CustomUserDetails userDetails) throws NotFoundException {
         TaskEntity entity = taskRepository.findByIdAdmin(request.getTaskId()).orElseThrow(() -> new NotFoundException("Task not found"));
         CommentEntity comment = saveComment(request);
 
@@ -186,9 +179,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public CommentDto removeComment(Long taskId, Long commentId) throws NotFoundException {
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+    public CommentDto removeComment(Long taskId, Long commentId, CustomUserDetails userDetails) throws NotFoundException {
         TaskEntity task = taskRepository.findByIdAndUserId(taskId, userDetails.getId()).orElseThrow(() -> new NotFoundException("Task not found"));
 
         CommentEntity commentToDelete = task.getComments().stream()
@@ -204,8 +195,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public byte[] generateExcelReport() throws IOException {
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public byte[] generateExcelReport(CustomUserDetails userDetails) throws IOException {
         List<TaskEntity> tasks = taskRepository.findAllByUserId(userDetails.getId());
 
         // Creamos el libro
@@ -269,10 +259,8 @@ public class TaskServiceImpl implements TaskService {
         return entity;
     }
 
-    private TaskEntity toEntityForUpdate(Long taskId, TaskRequest request) throws NotFoundException {
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        TaskEntity entity = taskRepository.findByIdAndUserId(taskId, userDetails.getId()).orElseThrow(() -> new NotFoundException("User not found"));
+    private TaskEntity toEntityForUpdate(Long taskId, TaskRequest request, Long userId) throws NotFoundException {
+        TaskEntity entity = taskRepository.findByIdAndUserId(taskId, userId).orElseThrow(() -> new NotFoundException("User not found"));
 
         TaskEntity entityToUpdate = taskMapper.toEntity(request, entity);
         entityToUpdate.setUpdatedAt(LocalDateTime.now());

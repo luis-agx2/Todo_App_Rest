@@ -2,6 +2,7 @@ package com.lag.todoapp.todoapp.controller;
 
 import com.lag.todoapp.todoapp.exception.NotFoundException;
 import com.lag.todoapp.todoapp.exception.ValidationErrorException;
+import com.lag.todoapp.todoapp.model.CustomUserDetails;
 import com.lag.todoapp.todoapp.model.filter.LabelFilter;
 import com.lag.todoapp.todoapp.model.request.LabelRequest;
 import com.lag.todoapp.todoapp.service.LabelService;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,31 +43,31 @@ public class LabelController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping
-    public ResponseEntity<Object> create(@Validated @RequestBody LabelRequest request) throws NotFoundException {
-        return ResponseEntity.status(HttpStatus.CREATED).body(labelService.create(request));
+    public ResponseEntity<Object> create(@Validated @RequestBody LabelRequest request, @AuthenticationPrincipal CustomUserDetails userDetails) throws NotFoundException {
+        return ResponseEntity.status(HttpStatus.CREATED).body(labelService.create(request, userDetails));
     }
 
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/{labelId}")
-    public ResponseEntity<Object> updateById(@RequestBody LabelRequest request, @PathVariable Long labelId) throws NotFoundException, ValidationErrorException {
-        return ResponseEntity.ok(labelService.updateyId(request, labelId));
+    public ResponseEntity<Object> updateById(@RequestBody LabelRequest request, @PathVariable Long labelId, @AuthenticationPrincipal CustomUserDetails userDetails) throws NotFoundException, ValidationErrorException {
+        return ResponseEntity.ok(labelService.updateyId(request, labelId, userDetails));
     }
 
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/{labelId}")
-    public ResponseEntity<Object> deleteById(@PathVariable Long labelId) throws NotFoundException {
-        return ResponseEntity.ok(labelService.deleteById(labelId));
+    public ResponseEntity<Object> deleteById(@PathVariable Long labelId, @AuthenticationPrincipal CustomUserDetails userDetails) throws NotFoundException {
+        return ResponseEntity.ok(labelService.deleteById(labelId, userDetails));
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping
-    public ResponseEntity<Object> getAll() {
-        return ResponseEntity.ok(labelService.findAll());
+    public ResponseEntity<Object> getAll(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ResponseEntity.ok(labelService.findAll(userDetails));
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{labelId}")
-    public ResponseEntity<Object> getById(@PathVariable Long labelId) throws NotFoundException {
-        return ResponseEntity.ok(labelService.findById(labelId));
+    public ResponseEntity<Object> getById(@PathVariable Long labelId, @AuthenticationPrincipal CustomUserDetails userDetails) throws NotFoundException {
+        return ResponseEntity.ok(labelService.findById(labelId, userDetails));
     }
 }

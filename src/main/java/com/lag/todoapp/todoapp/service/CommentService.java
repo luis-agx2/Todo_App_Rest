@@ -1,6 +1,7 @@
 package com.lag.todoapp.todoapp.service;
 
 import com.lag.todoapp.todoapp.exception.NotFoundException;
+import com.lag.todoapp.todoapp.model.CustomUserDetails;
 import com.lag.todoapp.todoapp.model.filter.CommentFilter;
 import com.lag.todoapp.todoapp.model.request.CommentRequest;
 import com.lag.todoapp.todoapp.model.response.CommentDto;
@@ -14,9 +15,9 @@ public interface CommentService {
 
     CommentDto findByIdAdmin(Long commentId) throws NotFoundException;
 
-    CommentDto updateById(Long commentId, CommentRequest request) throws NotFoundException;
+    CommentDto updateById(Long commentId, CommentRequest request, CustomUserDetails userDetails) throws NotFoundException;
 
-    List<CommentDto> findAllMe();
+    List<CommentDto> findAllMe(CustomUserDetails userDetails);
 
-    CommentDto findById(Long taskId) throws NotFoundException;
+    CommentDto findById(Long taskId, CustomUserDetails userDetails) throws NotFoundException;
 }

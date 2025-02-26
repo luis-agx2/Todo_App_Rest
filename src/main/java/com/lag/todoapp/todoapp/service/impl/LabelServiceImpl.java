@@ -65,8 +65,8 @@ public class LabelServiceImpl implements LabelService {
 
     @Transactional
     @Override
-    public LabelDto create(LabelRequest request) throws NotFoundException {
-        LabelEntity labelToCreate = mapToEntity(request);
+    public LabelDto create(LabelRequest request, CustomUserDetails userDetails) throws NotFoundException {
+        LabelEntity labelToCreate = mapToEntity(request, userDetails.getId());
         labelToCreate.setCreatedAt(LocalDateTime.now());
 
         return labelMapper.toDto(labelRepository.save(labelToCreate));
@@ -74,9 +74,7 @@ public class LabelServiceImpl implements LabelService {
 
     @Transactional
     @Override
-    public LabelDto updateyId(LabelRequest request, Long labelId) throws NotFoundException, ValidationErrorException {
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+    public LabelDto updateyId(LabelRequest request, Long labelId, CustomUserDetails userDetails) throws NotFoundException, ValidationErrorException {
         LabelEntity label = labelRepository.findByIdAndUserId(labelId, userDetails.getId()).orElseThrow(() -> new NotFoundException("Label not found"));
 
         if (labelNameExists(request.getName(), userDetails.getId(), label.getId())) {
@@ -90,9 +88,7 @@ public class LabelServiceImpl implements LabelService {
     }
 
     @Override
-    public LabelDto deleteById(Long labelId) throws NotFoundException {
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+    public LabelDto deleteById(Long labelId, CustomUserDetails userDetails) throws NotFoundException {
         LabelEntity label = labelRepository.findByIdAndUserId(labelId, userDetails.getId()).orElseThrow(() -> new NotFoundException("Label not found"));
 
         labelRepository.delete(label);
@@ -101,24 +97,19 @@ public class LabelServiceImpl implements LabelService {
     }
 
     @Override
-    public List<LabelDto> findAll() {
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+    public List<LabelDto> findAll(CustomUserDetails userDetails) {
         return labelMapper.toDtosList(labelRepository.findAllByUserId(userDetails.getId()));
     }
 
     @Override
-    public LabelDto findById(Long labelId) throws NotFoundException {
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+    public LabelDto findById(Long labelId, CustomUserDetails userDetails) throws NotFoundException {
         LabelEntity entity = labelRepository.findByIdAndUserId(labelId, userDetails.getId()).orElseThrow(() -> new NotFoundException("Label not found"));
 
         return labelMapper.toDto(entity);
     }
 
-    private LabelEntity mapToEntity(LabelRequest labelRequest) throws NotFoundException {
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserEntity user = userRepository.findById(userDetails.getId()).orElseThrow(() -> new NotFoundException("User not found"));
+    private LabelEntity mapToEntity(LabelRequest labelRequest, Long userId) throws NotFoundException {
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
 
         LabelEntity entity = labelMapper.toEntity(labelRequest);
         entity.setUser(user);

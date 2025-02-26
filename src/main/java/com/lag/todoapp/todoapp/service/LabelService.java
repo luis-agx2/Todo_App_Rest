@@ -2,6 +2,7 @@ package com.lag.todoapp.todoapp.service;
 
 import com.lag.todoapp.todoapp.exception.NotFoundException;
 import com.lag.todoapp.todoapp.exception.ValidationErrorException;
+import com.lag.todoapp.todoapp.model.CustomUserDetails;
 import com.lag.todoapp.todoapp.model.filter.LabelFilter;
 import com.lag.todoapp.todoapp.model.request.LabelRequest;
 import com.lag.todoapp.todoapp.model.response.LabelDto;
@@ -15,13 +16,13 @@ public interface LabelService {
 
     LabelDto findByIdAdmin(Long labelId) throws NotFoundException;
 
-    LabelDto create(LabelRequest request) throws NotFoundException;
+    LabelDto create(LabelRequest request, CustomUserDetails userDetails) throws NotFoundException;
 
-    LabelDto updateyId(LabelRequest request, Long labelId) throws NotFoundException, ValidationErrorException;
+    LabelDto updateyId(LabelRequest request, Long labelId, CustomUserDetails userDetails) throws NotFoundException, ValidationErrorException;
 
-    LabelDto deleteById(Long labelId) throws NotFoundException;
+    LabelDto deleteById(Long labelId, CustomUserDetails userDetails) throws NotFoundException;
 
-    List<LabelDto> findAll();
+    List<LabelDto> findAll(CustomUserDetails userDetails);
 
-    LabelDto findById(Long labelId) throws NotFoundException;
+    LabelDto findById(Long labelId, CustomUserDetails userDetails) throws NotFoundException;
 }

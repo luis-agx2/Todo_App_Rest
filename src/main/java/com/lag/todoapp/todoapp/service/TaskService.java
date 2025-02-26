@@ -1,6 +1,7 @@
 package com.lag.todoapp.todoapp.service;
 
 import com.lag.todoapp.todoapp.exception.NotFoundException;
+import com.lag.todoapp.todoapp.model.CustomUserDetails;
 import com.lag.todoapp.todoapp.model.filter.TaskFilter;
 import com.lag.todoapp.todoapp.model.request.CommentRequest;
 import com.lag.todoapp.todoapp.model.request.TaskRequest;
@@ -18,23 +19,23 @@ public interface TaskService {
 
     TaskDto findByIdAdmin(Long taskId) throws NotFoundException;
 
-    Page<TaskDto> findAllPaginated(Pageable pageable);
+    Page<TaskDto> findAllPaginated(Pageable pageable, CustomUserDetails userDetails);
 
-    TaskDto findById(Long taskId) throws NotFoundException;
+    TaskDto findById(Long taskId, CustomUserDetails userDetails) throws NotFoundException;
 
     TaskDto create(TaskRequest request) throws NotFoundException;
 
-    TaskDto updateById(Long taskId, TaskRequest request) throws NotFoundException;
+    TaskDto updateById(Long taskId, TaskRequest request, CustomUserDetails userDetails) throws NotFoundException;
 
-    TaskDto deleteById(Long taskId) throws NotFoundException;
+    TaskDto deleteById(Long taskId, CustomUserDetails userDetails) throws NotFoundException;
 
-    List<LabelDto> addLabel(Long taskId, Long labelId) throws NotFoundException;
+    List<LabelDto> addLabel(Long taskId, Long labelId, CustomUserDetails userDetails) throws NotFoundException;
 
-    List<LabelDto> removeLabel(Long taskId, Long labelId) throws NotFoundException;
+    List<LabelDto> removeLabel(Long taskId, Long labelId, CustomUserDetails userDetails) throws NotFoundException;
 
-    CommentDto addComment(CommentRequest request) throws NotFoundException;
+    CommentDto addComment(CommentRequest request, CustomUserDetails userDetails) throws NotFoundException;
 
-    CommentDto removeComment(Long taskId, Long commentId) throws NotFoundException;
+    CommentDto removeComment(Long taskId, Long commentId, CustomUserDetails userDetails) throws NotFoundException;
 
-    byte[] generateExcelReport() throws IOException;
+    byte[] generateExcelReport(CustomUserDetails userDetails) throws IOException;
 }
