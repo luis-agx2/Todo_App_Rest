@@ -63,7 +63,7 @@ class AuthServiceImplTest {
 
     @Nested
     @DisplayName("Register tests")
-    class registerTests {
+    class RegisterTests {
         @Test
         @DisplayName("Must doing register successfully")
         void testRegisterSuccess() {
