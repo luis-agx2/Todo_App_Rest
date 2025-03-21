@@ -18,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -33,16 +31,13 @@ public class LabelServiceImpl implements LabelService {
 
     private final LabelMapper labelMapper;
 
-    private final UserMapper userMapper;
-
     @Autowired
     public LabelServiceImpl(LabelRepository labelRepository,
                             UserRepository userRepository,
-                            LabelMapper labelMapper, UserMapper userMapper) {
+                            LabelMapper labelMapper) {
         this.labelRepository = labelRepository;
         this.userRepository = userRepository;
         this.labelMapper = labelMapper;
-        this.userMapper = userMapper;
     }
 
     @Override
@@ -118,6 +113,7 @@ public class LabelServiceImpl implements LabelService {
     }
 
     private boolean labelNameExists(String name, Long userId, Long labelId) {
+        System.out.println(labelRepository.findByNameAndUserIdAndIdIsNot(name, userId, labelId).isPresent());
         return labelRepository.findByNameAndUserIdAndIdIsNot(name, userId, labelId).isPresent();
     }
 }
