@@ -34,3 +34,4 @@ services:
       retries: 10
 volumes:
   todo_app_db:
+    external: true
