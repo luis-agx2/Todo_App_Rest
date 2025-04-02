@@ -12,7 +12,7 @@ public class UserDetailsDto {
     private Integer age;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private UserDto userDto;
+    private UserDto user;
 
     public UserDetailsDto() {
     }
@@ -21,12 +21,12 @@ public class UserDetailsDto {
                           String firstName,
                           String lastName,
                           Integer age,
-                          UserDto userDto) {
+                          UserDto user) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
-        this.userDto = userDto;
+        this.user = user;
     }
 
     public Long getId() {
@@ -61,12 +61,12 @@ public class UserDetailsDto {
         this.age = age;
     }
 
-    public UserDto getUserDto() {
-        return userDto;
+    public UserDto getUser() {
+        return user;
     }
 
     public void setUserDto(UserDto userDto) {
-        this.userDto = userDto;
+        this.user = userDto;
     }
 
     @Override
@@ -76,7 +76,7 @@ public class UserDetailsDto {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", age=" + age +
-                ", userDto=" + userDto +
+                ", user=" + user +
                 '}';
     }
 }
