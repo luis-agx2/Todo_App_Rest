@@ -31,7 +31,7 @@ public class UserDetailMapper {
 
     public UserDetailsDto toDto(UserDetailEntity entity) {
         UserDetailsDto dto = toDtoAdmin(entity);
-        dto.setUserDto(null);
+        dto.setUserDto(userMapper.toDtoWitOutRoles(entity.getUser()));
 
         return dto;
     }
