@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -76,10 +75,11 @@ public class JwtFilter extends OncePerRequestFilter {
 
         Set<SimpleGrantedAuthority> roles = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
-                . collect(Collectors.toSet());
+                .collect(Collectors.toSet());
 
         return new CustomUserDetails(
                 user.getId(),
+                user.getNickname(),
                 user.getEmail(),
                 user.getPassword(),
                 user.isAccountNoExpired(),

@@ -53,7 +53,7 @@ class CommentServiceImplTest {
     @Nested
     @DisplayName("Get tests")
     class GetTest {
-        CustomUserDetails userDetails = new CustomUserDetails(1L, "username", "123456", true, true, true, true, Set.of());
+        CustomUserDetails userDetails = new CustomUserDetails(1L, "nickname", "username", "123456", true, true, true, true, Set.of());
 
         @Test
         @DisplayName("Must return all tasks - Admin")
@@ -131,7 +131,7 @@ class CommentServiceImplTest {
     @Nested
     @DisplayName("Modification test")
     class CreationTests {
-        CustomUserDetails userDetails = new CustomUserDetails(1L, "username", "123456", true, true, true, true, Set.of());
+        CustomUserDetails userDetails = new CustomUserDetails(1L, "nickname", "username", "123456", true, true, true, true, Set.of());
 
         @Test
         @DisplayName("Must update comment by id")

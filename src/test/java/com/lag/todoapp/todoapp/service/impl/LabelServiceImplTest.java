@@ -47,7 +47,7 @@ class LabelServiceImplTest {
     @Nested
     @DisplayName("Get tests")
     class GetTest {
-        CustomUserDetails userDetails = new CustomUserDetails(1L, "username", "123456", true, true, true, true, Set.of());
+        CustomUserDetails userDetails = new CustomUserDetails(1L, "nickname", "username", "123456", true, true, true, true, Set.of());
 
         @Test
         @DisplayName("Must return all labels - Admin")
@@ -125,7 +125,7 @@ class LabelServiceImplTest {
     @Nested
     @DisplayName("Creation tests")
     class CreateTest {
-        CustomUserDetails userDetails = new CustomUserDetails(1L, "username", "123456", true, true, true, true, Set.of());
+        CustomUserDetails userDetails = new CustomUserDetails(1L, "nickname", "username", "123456", true, true, true, true, Set.of());
 
         @Test
         @DisplayName("Must create a label")
@@ -160,7 +160,7 @@ class LabelServiceImplTest {
     @Nested
     @DisplayName("Modification tests")
     class UpdateTest {
-        CustomUserDetails userDetails = new CustomUserDetails(1L, "username", "123456", true, true, true, true, Set.of());
+        CustomUserDetails userDetails = new CustomUserDetails(1L, "nickname", "username", "123456", true, true, true, true, Set.of());
 
         @Test
         @DisplayName("Must update a label")
@@ -211,7 +211,7 @@ class LabelServiceImplTest {
     @Nested
     @DisplayName("Deletion Test")
     class DeleteTest {
-        CustomUserDetails userDetails = new CustomUserDetails(1L, "username", "123456", true, true, true, true, Set.of());
+        CustomUserDetails userDetails = new CustomUserDetails(1L, "nickname", "username", "123456", true, true, true, true, Set.of());
 
         @Test
         @DisplayName("Must delete label by id")

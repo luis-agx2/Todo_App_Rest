@@ -6,6 +6,7 @@ import com.lag.todoapp.todoapp.entity.RoleEntity;
 import com.lag.todoapp.todoapp.entity.UserDetailEntity;
 import com.lag.todoapp.todoapp.entity.UserEntity;
 import com.lag.todoapp.todoapp.exception.NotFoundException;
+import com.lag.todoapp.todoapp.model.CustomUserDetails;
 import com.lag.todoapp.todoapp.model.request.LoginRequest;
 import com.lag.todoapp.todoapp.model.request.RegisterRequest;
 import com.lag.todoapp.todoapp.model.response.LoginDto;
@@ -20,8 +21,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +28,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -73,12 +73,10 @@ public class AuthServiceImpl implements AuthService {
         UserEntity user = userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new BadCredentialsException("Bad credentials"));
 
-        UserDetails userDetails = buildUserDetails(user);
+        CustomUserDetails userDetails = buildUserDetails(user);
         String jwt = jwtService.generateToken(userDetails);
 
         QuoteDto quote = quoteClient.get("https://dummyjson.com/quotes/random", QuoteDto.class);
-
-
 
         return new LoginDto(jwt, quote);
     }
@@ -119,10 +117,12 @@ public class AuthServiceImpl implements AuthService {
         return new HashSet<>(roles);
     }
 
-    private UserDetails buildUserDetails(UserEntity user) {
-        List<SimpleGrantedAuthority> authorities = buildAuthorities(user.getRoles());
+    private CustomUserDetails buildUserDetails(UserEntity user) {
+        Set<SimpleGrantedAuthority> authorities = buildAuthorities(user.getRoles());
 
-        return new User(
+        return new CustomUserDetails(
+                user.getId(),
+                user.getNickname(),
                 user.getEmail(),
                 user.getPassword(),
                 user.isEnabled(),
@@ -133,9 +133,9 @@ public class AuthServiceImpl implements AuthService {
         );
     }
 
-    private List<SimpleGrantedAuthority> buildAuthorities(Set<RoleEntity> roleEntities) {
+    private Set<SimpleGrantedAuthority> buildAuthorities(Set<RoleEntity> roleEntities) {
         return roleEntities.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
-                .toList();
+                .collect(Collectors.toSet());
     }
 }

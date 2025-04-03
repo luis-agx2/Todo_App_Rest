@@ -9,6 +9,7 @@ import com.lag.todoapp.todoapp.entity.RoleEntity;
 import com.lag.todoapp.todoapp.entity.UserDetailEntity;
 import com.lag.todoapp.todoapp.entity.UserEntity;
 import com.lag.todoapp.todoapp.exception.NotFoundException;
+import com.lag.todoapp.todoapp.model.CustomUserDetails;
 import com.lag.todoapp.todoapp.model.request.LoginRequest;
 import com.lag.todoapp.todoapp.model.request.RegisterRequest;
 import com.lag.todoapp.todoapp.model.response.LoginDto;
@@ -111,7 +112,7 @@ class AuthServiceImplTest {
             LoginDto response = authService.login(loginRequest);
 
             Mockito.verify(authenticationManager, Mockito.atMostOnce()).authenticate(Mockito.any(UsernamePasswordAuthenticationToken.class));
-            Mockito.verify(jwtService, Mockito.atMostOnce()).generateToken(Mockito.any(UserDetails.class));
+            Mockito.verify(jwtService, Mockito.atMostOnce()).generateToken(Mockito.any(CustomUserDetails.class));
             Mockito.verify(quoteClient, Mockito.atMostOnce()).get(Mockito.anyString(), Mockito.eq(QuoteDto.class));
 
             Assertions.assertNotNull(response);
@@ -127,7 +128,7 @@ class AuthServiceImplTest {
             });
 
             Mockito.verify(authenticationManager, Mockito.atMostOnce()).authenticate(Mockito.any(UsernamePasswordAuthenticationToken.class));
-            Mockito.verify(jwtService, Mockito.never()).generateToken(Mockito.any(UserDetails.class));
+            Mockito.verify(jwtService, Mockito.never()).generateToken(Mockito.any(CustomUserDetails.class));
             Mockito.verify(quoteClient, Mockito.never()).get(Mockito.anyString(), Mockito.eq(QuoteDto.class));
 
             Assertions.assertEquals(exception.getClass(), BadCredentialsException.class);

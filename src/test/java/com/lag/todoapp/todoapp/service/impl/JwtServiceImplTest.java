@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -19,9 +17,10 @@ import java.util.Set;
 @ActiveProfiles(value = "test")
 @ContextConfiguration(classes = TestContainersConfig.class)
 class JwtServiceImplTest {
-    private final UserDetails userDetails = new CustomUserDetails(
-        1L,
+    private final CustomUserDetails userDetails = new CustomUserDetails(
+            1L,
             "juandoee",
+            "juandoee@gmail.com",
             "123456",
             true,
             true,
@@ -66,9 +65,10 @@ class JwtServiceImplTest {
     @Test
     @DisplayName("Must token not test")
     void validateTokenFailedTest() {
-        UserDetails userDetails2 = new CustomUserDetails(
+        CustomUserDetails userDetails2 = new CustomUserDetails(
                 2L,
                 "juanjose",
+                "juanjose@gmail.com",
                 "",
                 true,
                 true,

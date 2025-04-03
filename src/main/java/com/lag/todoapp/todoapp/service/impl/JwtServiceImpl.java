@@ -1,5 +1,6 @@
 package com.lag.todoapp.todoapp.service.impl;
 
+import com.lag.todoapp.todoapp.model.CustomUserDetails;
 import com.lag.todoapp.todoapp.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -18,11 +19,12 @@ public class JwtServiceImpl implements JwtService {
     private static final String SECRET_KEY = "AkB63SLoUIV/Mt3mh0T6VC++XZFzAYCdinNdCo3rRu0h5/NY1RS2BYjKmPcHSizV";
 
     @Override
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(CustomUserDetails userDetails) {
         Map<String, Object> extraClaims = new HashMap<>();
 
         extraClaims.put("roles", userDetails.getAuthorities());
         extraClaims.put("email", userDetails.getUsername());
+        extraClaims.put("id", userDetails.getId());
 
         return generateToken(extraClaims, userDetails);
     }

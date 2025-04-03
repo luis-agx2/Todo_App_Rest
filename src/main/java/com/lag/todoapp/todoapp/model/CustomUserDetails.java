@@ -5,11 +5,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 public class CustomUserDetails implements UserDetails {
     private Long id;
+
+    private String nickname;
 
     private String username;
 
@@ -29,6 +30,7 @@ public class CustomUserDetails implements UserDetails {
     }
 
     public CustomUserDetails(Long id,
+                             String nickname,
                              String username,
                              String password,
                              boolean accountNonExpired,
@@ -37,6 +39,7 @@ public class CustomUserDetails implements UserDetails {
                              boolean enabled,
                              Set<SimpleGrantedAuthority> authorities) {
         this.id = id;
+        this.nickname = nickname;
         this.username = username;
         this.password = password;
         this.accountNonExpired = accountNonExpired;
@@ -52,6 +55,14 @@ public class CustomUserDetails implements UserDetails {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     @Override
