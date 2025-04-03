@@ -3,6 +3,7 @@ package com.lag.todoapp.todoapp.service.impl;
 import com.lag.todoapp.todoapp.entity.UserDetailEntity;
 import com.lag.todoapp.todoapp.exception.NotFoundException;
 import com.lag.todoapp.todoapp.mapper.UserDetailMapper;
+import com.lag.todoapp.todoapp.model.CustomUserDetails;
 import com.lag.todoapp.todoapp.model.request.UserDetailsRequest;
 import com.lag.todoapp.todoapp.model.response.UserDetailsDto;
 import com.lag.todoapp.todoapp.repository.UserDetailRepository;
@@ -25,7 +26,6 @@ public class UserDetailServiceImpl implements UserDetailService {
         this.userDetailMapper = userDetailMapper;
     }
 
-
     @Override
     public UserDetailsDto findByUserId(Long userId) throws NotFoundException {
         UserDetailEntity userDetail = userDetailRepository.findByUserId(userId).orElseThrow(() -> new NotFoundException("User not found"));
@@ -41,5 +41,15 @@ public class UserDetailServiceImpl implements UserDetailService {
         detailsToUpdate.setUpdatedAt(LocalDateTime.now());
 
         return userDetailMapper.toDto(userDetailRepository.save(detailsToUpdate));
+    }
+
+    @Override
+    public UserDetailsDto findByMe(CustomUserDetails userDetails) throws NotFoundException {
+        return findByUserId(userDetails.getId());
+    }
+
+    @Override
+    public UserDetailsDto updateMe(UserDetailsRequest request, CustomUserDetails userDetails) throws NotFoundException {
+        return updateByUserId(userDetails.getId(), request);
     }
 }
