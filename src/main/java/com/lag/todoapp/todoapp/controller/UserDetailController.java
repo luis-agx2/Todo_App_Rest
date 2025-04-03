@@ -36,7 +36,7 @@ public class UserDetailController {
         return ResponseEntity.ok(userDetailService.findByMe(userDetails));
     }
 
-    @PutMapping
+    @PutMapping("/me")
     public ResponseEntity<Object> updateMe(@RequestBody UserDetailsRequest request, @AuthenticationPrincipal CustomUserDetails userDetails) {
         return ResponseEntity.ok(userDetailService.updateMe(request, userDetails));
     }

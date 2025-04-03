@@ -49,7 +49,7 @@ public class UserDetailMapper {
         return userDetail;
     }
 
-    private <T> T updateIfValueExists(Supplier<T> newValue, Supplier<T> value) {
+    private <T> T updateIfValueExists(Supplier<T> value, Supplier<T> newValue) {
         return newValue.get() != null
                 ? newValue.get()
                 : value.get();
